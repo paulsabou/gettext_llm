@@ -1,6 +1,6 @@
 # Gettext LLM
 
-**TODO: Add description**
+**Elixir Gettext LLM based translation library - WIP **
 
 ## Installation
 
