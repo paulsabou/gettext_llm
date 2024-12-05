@@ -1,11 +1,11 @@
-defmodule GettextLLM.GettextLLMTest do
+defmodule GettextLLM.GettextTest do
   @moduledoc """
   Documentation for `GettextLLM`.
   """
 
   use ExUnit.Case
   alias GettextLLM.Gettext.GettextHelper
-  @samples_folder_path "test/gettext/sample3"
+  @samples_folder_path "test/gettext/sample2"
 
   setup do
     {:ok, _} =
@@ -81,34 +81,23 @@ defmodule GettextLLM.GettextLLMTest do
     :ok
   end
 
-  describe "translate/3" do
-    test "translates the sample folder" do
-      {:ok, _} =
-        GettextLLM.translate(GettextLLM.Translator.TranslatorTest, "en", @samples_folder_path)
+  describe "scan_root_folder/1" do
+    test "scans the sample folder" do
+      {:ok, results} = GettextLLM.Gettext.scan_root_folder(@samples_folder_path)
 
-      {:ok,
-       ~s"""
-       #, elixir-autogen, elixir-format
-       msgid "Actions"
-       msgstr "Actions - fr"
+      %{
+        files: [
+          "test/gettext/sample2/en/LC_MESSAGES/default.po",
+          "test/gettext/sample2/en/LC_MESSAGES/errors.po"
+        ]
+      } = Enum.find(results, &(&1.language_code == "en"))
 
-       #, elixir-autogen, elixir-format
-       msgid "close"
-       msgstr "close - fr"
-       """} =
-        GettextHelper.read_translation_file(@samples_folder_path, "fr", "default")
-
-      {:ok,
-       """
-       #, elixir-autogen, elixir-format
-       msgid "invalid location"
-       msgstr "invalid location - fr"
-
-       #, elixir-autogen, elixir-format
-       msgid "must be a valid email address"
-       msgstr "must be a valid email address - fr"
-       """} =
-        GettextHelper.read_translation_file(@samples_folder_path, "fr", "errors")
+      %{
+        files: [
+          "test/gettext/sample2/fr/LC_MESSAGES/default.po",
+          "test/gettext/sample2/fr/LC_MESSAGES/errors.po"
+        ]
+      } = Enum.find(results, &(&1.language_code == "fr"))
     end
   end
 end

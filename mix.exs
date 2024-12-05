@@ -43,6 +43,8 @@ defmodule GettextLLM.MixProject do
   defp deps do
     [
       {:expo, "~> 1.1.0"},
+      {:langchain, "0.3.0-rc.0"},
+
       # Dev/test dependencies
       {:credo, "~> 1.7", only: [:dev], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
