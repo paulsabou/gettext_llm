@@ -3,9 +3,20 @@ defmodule GettextLLM.Translator.Specs do
   This module provides various translation specs.
   """
 
+  @type endpoint() :: %{
+          adapter: module(),
+          model: String.t(),
+          config: map()
+        }
+
+  @type config() :: %{
+          endpoint: endpoint(),
+          persona: String.t(),
+          style: String.t()
+        }
+
   @type opts() :: %{
           source_message: String.t(),
-          source_language_code: String.t(),
           target_language_code: String.t()
         }
 end

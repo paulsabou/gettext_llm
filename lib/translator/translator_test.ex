@@ -6,13 +6,8 @@ defmodule GettextLLM.Translator.TranslatorTest do
 
   alias GettextLLM.Translator.Specs
 
-  @spec translate(Specs.opts()) :: {:ok, String.t()} | {:error, any()}
-  def translate(opts) do
-    {:ok,
-     if opts.source_language_code == opts.target_language_code do
-       opts.source_message
-     else
-       "#{opts.source_message} - #{opts.target_language_code}"
-     end}
+  @spec translate(Specs.config(), Specs.opts()) :: {:ok, String.t()} | {:error, any()}
+  def translate(_config, opts) do
+    {:ok, "#{opts.source_message} - #{opts.target_language_code}"}
   end
 end

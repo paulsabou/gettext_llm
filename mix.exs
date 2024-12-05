@@ -13,6 +13,7 @@ defmodule GettextLLM.MixProject do
       elixir: "~> 1.17",
       build_embedded: Mix.env() == :prod,
       deps: deps(),
+      aliases: aliases(),
 
       # Hex
       package: hex_package(),
@@ -39,17 +40,45 @@ defmodule GettextLLM.MixProject do
     ]
   end
 
-  # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      # BEGIN --------------------------------- App core
+      # Reading & writting PO files
       {:expo, "~> 1.1.0"},
+      # LLM API client & more
       {:langchain, "0.3.0-rc.0"},
+      # END --------------------------------- App core
 
-      # Dev/test dependencies
-      {:credo, "~> 1.7", only: [:dev], runtime: false},
-      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
-      {:ex_doc, "~> 0.35.1", only: [:dev], runtime: false},
+      # BEGIN --------------------------------- Developer Experience
+      # Types annotations checks
+      {:dialyxir, "~> 1.4", runtime: false},
+      # Code style checker
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      # Security checks
+      {:sobelow, "~> 0.13", only: [:dev, :test], runtime: false},
+      # Code documentation
+      {:ex_doc, ">= 0.0.0", only: [:dev], runtime: false},
+      # Deps security audits
+      {:mix_audit, "~> 2.1", only: [:dev, :test], runtime: false},
+      # Coverage report tool
       {:excoveralls, "~> 0.17", only: [:test], runtime: false}
+      # END --------------------------------- Developer Experience
+    ]
+  end
+
+  defp aliases do
+    [
+      test: ["test"],
+      sobelow: ["sobelow --config .sobelow-conf"],
+      prepare_commit: [
+        "credo",
+        "sobelow",
+        "hex.audit",
+        "deps.audit",
+        "deps.unlock --check-unused",
+        "format",
+        "dialyzer"
+      ]
     ]
   end
 end

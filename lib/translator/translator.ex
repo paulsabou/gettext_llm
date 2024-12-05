@@ -3,5 +3,5 @@ defmodule GettextLLM.Translator.Translator do
   This module provides a translator behavior.
   """
   alias GettextLLM.Translator.Specs
-  @callback translate(Specs.opts()) :: {:ok, String.t()} | {:error, any()}
+  @callback translate(Specs.config(), Specs.opts()) :: {:ok, String.t()} | {:error, any()}
 end
