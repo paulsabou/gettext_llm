@@ -27,3 +27,6 @@ gettextllm-*.tar
 
 # Local sample config
 config/config.exs
+
+# Local priv folder
+priv/gettext

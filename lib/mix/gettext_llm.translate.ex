@@ -23,7 +23,7 @@ defmodule Mix.Tasks.GettextLlm.Translate do
   """
   @shortdoc "Translates Gettext PO folder(s) using an LLM endpoint."
 
-  @requirements ["app.config"]
+  @requirements ["app.start"]
   @preferred_cli_env :dev
 
   use Mix.Task
