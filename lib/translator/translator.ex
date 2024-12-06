@@ -1,6 +1,6 @@
 defmodule GettextLLM.Translator.Translator do
   @moduledoc """
-  This module provides a translator behavior.
+  Translator behavior. Any translators must implement this.
   """
   alias GettextLLM.Translator.Specs
   @callback translate(Specs.config(), Specs.opts()) :: {:ok, String.t()} | {:error, any()}

@@ -1,10 +1,13 @@
 defmodule GettextLLM do
   @moduledoc """
-  Gettext LLM related functions.
+  Gettext LLM main functions.
   """
 
+  alias GettextLLM.Translator.Specs
+  alias GettextLLM.Translator.TranslatorLangchain
+
   @spec empty_string?(String.t()) :: boolean()
-  def empty_string?(string_value) do
+  defp empty_string?(string_value) do
     if is_nil(string_value) do
       true
     else
@@ -12,19 +15,35 @@ defmodule GettextLLM do
     end
   end
 
-  def empty_message_translation?(message) do
+  defp empty_message_translation?(message) do
     [value] = message.msgstr
     empty_string?(value)
   end
 
-  @spec translate(module(), Path.t()) ::
+  @spec get_config() :: Specs.config()
+  def get_config() do
+    config = Application.fetch_env!(:gettext_llm, __MODULE__)
+
+    %{
+      endpoint: %{
+        adapter: Keyword.fetch!(config, :endpoint),
+        model: Keyword.fetch!(config, :endpoint_model),
+        temperature: Keyword.fetch!(config, :endpoint_temperature),
+        config: Keyword.fetch!(config, :endpoint_config)
+      },
+      persona: Keyword.get(config, :persona, TranslatorLangchain.translator_persona_default()),
+      style: Keyword.get(config, :style, TranslatorLangchain.translator_style_default())
+    }
+  end
+
+  @spec translate(module(), Specs.config(), Path.t()) ::
           {:ok, non_neg_integer()} | {:error, any()}
-  def translate(module, root_gettext_path) do
+  def translate(module, config, root_gettext_path) do
     {:ok, results} = GettextLLM.Gettext.scan_root_folder(root_gettext_path)
 
     translate_po_folder = fn po_folder ->
       po_folder.files
-      |> Enum.map(&translate_one_po_file(module, po_folder.language_code, &1))
+      |> Enum.map(&translate_one_po_file(module, config, po_folder.language_code, &1))
       |> Enum.map(fn {_status, count} -> count end)
       |> Enum.sum()
     end
@@ -35,15 +54,15 @@ defmodule GettextLLM do
      |> Enum.sum()}
   end
 
-  @spec translate_one_po_file(module(), String.t(), Path.t()) ::
+  @spec translate_one_po_file(module(), Specs.config(), String.t(), Path.t()) ::
           {:ok, non_neg_integer()} | {:error, any()}
-  defp translate_one_po_file(module, po_language_code, po_file_path) do
+  defp translate_one_po_file(module, config, po_language_code, po_file_path) do
     translate_message = fn message ->
       if empty_message_translation?(message) do
         [value] = message.msgid
 
         {:ok, translated_msgstr} =
-          module.translate(%{
+          module.translate(config, %{
             source_message: value,
             target_language_code: po_language_code
           })

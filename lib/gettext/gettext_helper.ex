@@ -1,6 +1,6 @@
 defmodule GettextLLM.Gettext.GettextHelper do
   @moduledoc """
-  Test helper
+  Gettext Test helper. To be moved to the test folder soon.
   """
 
   @lc_messages "LC_MESSAGES"

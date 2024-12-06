@@ -1,6 +1,6 @@
 defmodule GettextLLM.Gettext do
   @moduledoc """
-  Gettext files related functions.
+  Gettext folder & file scanning functions.
   """
 
   @lc_messages "LC_MESSAGES"

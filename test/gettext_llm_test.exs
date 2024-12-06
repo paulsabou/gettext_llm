@@ -74,6 +74,7 @@ defmodule GettextLLM.GettextLLMTest do
       })
 
     on_exit(fn ->
+      nil
       # Cleanup
       GettextHelper.cleanup_folder(@samples_folder_path)
     end)

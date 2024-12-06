@@ -1,12 +1,25 @@
 defmodule GettextLLM.Translator.TranslatorLangchain do
   @moduledoc """
-  This module provides various translation functions based on langchain.
+  Translation functions based on langchain.
   """
   @behaviour GettextLLM.Translator.Translator
 
   alias GettextLLM.Translator.Specs
   alias LangChain.Message
   alias LangChain.Chains.LLMChain
+
+  @spec translate(Specs.config(), Specs.opts()) :: {:ok, String.t()} | {:error, any()}
+  def translate(config, opts) do
+    completion(config, opts)
+  end
+
+  def translator_persona_default() do
+    "You are translating messages for a website. You will provide translation that is casual but respectful and uses plain language."
+  end
+
+  def translator_style_default() do
+    "Casual but respectul. Uses plain plain language that can be understood by all age groups and demographics."
+  end
 
   @spec completion(Specs.config(), Specs.opts()) :: {:ok, String.t()} | {:error, any()}
   defp completion(config, opts) do
@@ -26,7 +39,11 @@ defmodule GettextLLM.Translator.TranslatorLangchain do
     with :ok <- set_langchain.(),
          {:ok, _updated_chain, response} <-
            LLMChain.new!(%{
-             llm: config.endpoint.adapter.new!(%{model: config.endpoint.model})
+             llm:
+               config.endpoint.adapter.new!(%{
+                 model: config.endpoint.model,
+                 temperature: config.endpoint.temperature
+               })
            })
            |> LLMChain.add_messages([
              Message.new_system!("#{config.persona}. Your translation style is #{config.style}"),
@@ -37,10 +54,5 @@ defmodule GettextLLM.Translator.TranslatorLangchain do
            |> LLMChain.run() do
       {:ok, response.content}
     end
-  end
-
-  @spec translate(Specs.config(), Specs.opts()) :: {:ok, String.t()} | {:error, any()}
-  def translate(config, opts) do
-    completion(config, opts)
   end
 end

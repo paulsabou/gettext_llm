@@ -1,6 +1,6 @@
 defmodule GettextLLM.Translator.TranslatorTest do
   @moduledoc """
-  This module provides various translation functions.
+  Various translation functions for testing purposes.
   """
   @behaviour GettextLLM.Translator.Translator
 

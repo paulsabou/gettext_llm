@@ -24,3 +24,6 @@ gettextllm-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+# Local sample config
+config/config.exs

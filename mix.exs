@@ -24,7 +24,7 @@ defmodule GettextLLM.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger, :telemetry]
     ]
   end
 
@@ -47,6 +47,13 @@ defmodule GettextLLM.MixProject do
       {:expo, "~> 1.1.0"},
       # LLM API client & more
       {:langchain, "0.3.0-rc.0"},
+      # Lanchain required telemetry
+      {:telemetry, "~> 1.0"},
+      # Lanchain required req
+      {:req, "~> 0.5.0"},
+      # Lanchain required finch
+      {:finch, "~> 0.19"},
+
       # END --------------------------------- App core
 
       # BEGIN --------------------------------- Developer Experience

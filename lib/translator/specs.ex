@@ -1,11 +1,12 @@
 defmodule GettextLLM.Translator.Specs do
   @moduledoc """
-  This module provides various translation specs.
+  Various translation specs for the translators.
   """
 
   @type endpoint() :: %{
           adapter: module(),
           model: String.t(),
+          temperature: float(),
           config: map()
         }
 
