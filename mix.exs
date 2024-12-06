@@ -1,7 +1,7 @@
 defmodule GettextLLM.MixProject do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.1.2"
 
   @description "Elixir Gettext LLM based translation library"
   @repo_url "https://github.com/paulsabou/gettext_llm"
@@ -47,12 +47,6 @@ defmodule GettextLLM.MixProject do
       {:expo, "~> 1.1.0"},
       # LLM API client & more
       {:langchain, "0.3.0-rc.0"},
-      # Lanchain required telemetry
-      {:telemetry, "~> 1.0"},
-      # Lanchain required req
-      {:req, "~> 0.5.0"},
-      # Lanchain required finch
-      {:finch, "~> 0.19"},
 
       # END --------------------------------- App core
 

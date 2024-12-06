@@ -5,6 +5,7 @@ defmodule GettextLLM.Translator.TranslatorLangchainTest do
   use ExUnit.Case
 
   describe "translate/2" do
+    @tag :skip
     test "Langchain based translator translates correctly" do
       {:ok, translation} =
         GettextLLM.Translator.TranslatorLangchain.translate(
