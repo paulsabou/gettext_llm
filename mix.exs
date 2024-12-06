@@ -30,7 +30,7 @@ defmodule GettextLLM.MixProject do
 
   def hex_package do
     [
-      maintainers: ["Paul Sabou"],
+      maintainers: ["Paul Sabou", "Adrian Codausi", "Goran Codausi"],
       licenses: ["Apache-2.0"],
       links: %{
         "GitHub" => @repo_url,

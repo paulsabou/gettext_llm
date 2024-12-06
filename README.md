@@ -103,3 +103,6 @@ mix help gettext_llm.translate
 ## Documentation
 Documentation can be be found at <https://hexdocs.pm/gettext_llm>.
 
+## Thanks
+Special thanks to [Adrian Codausi](https://github.com/AdrianCDS) & [Goran Codausi](https://github.com/goran-cds) for inspiring me to build this.
+They have build an earlier prototype of a similar functionality in another project.
