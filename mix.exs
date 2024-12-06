@@ -1,7 +1,7 @@
 defmodule GettextLLM.MixProject do
   use Mix.Project
 
-  @version "0.1.2"
+  @version "0.1.3"
 
   @description "Elixir Gettext LLM based translation library"
   @repo_url "https://github.com/paulsabou/gettext_llm"
