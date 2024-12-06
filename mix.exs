@@ -14,6 +14,8 @@ defmodule GettextLLM.MixProject do
       build_embedded: Mix.env() == :prod,
       deps: deps(),
       aliases: aliases(),
+      preferred_cli_env: [coveralls: :test, "coveralls.html": :test, "coveralls.github": :test],
+      test_coverage: [tool: ExCoveralls],
 
       # Hex
       package: hex_package(),
