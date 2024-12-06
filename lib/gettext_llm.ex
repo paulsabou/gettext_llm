@@ -74,9 +74,9 @@ defmodule GettextLLM do
     end
 
     with {:ok, po_file} <- Expo.PO.parse_file(po_file_path),
-         po_messages <- Enum.map(po_file.messages, &translate_message.(&1)),
          translated_message_count =
-           Enum.count(po_messages, &empty_message_translation?(&1)),
+           Enum.count(po_file.messages, &empty_message_translation?(&1)),
+         po_messages <- Enum.map(po_file.messages, &translate_message.(&1)),
          updated_po_file = %{
            po_file
            | messages: po_messages
