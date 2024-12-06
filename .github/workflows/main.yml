@@ -51,7 +51,3 @@ jobs:
       - name: Run tests
         run: mix test --trace
         if: ${{ !matrix.coverage }}
-
-      - name: Run tests with code coverage
-        run: mix coveralls.github
-        if: ${{ matrix.coverage }}

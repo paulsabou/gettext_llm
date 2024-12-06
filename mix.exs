@@ -14,8 +14,6 @@ defmodule GettextLLM.MixProject do
       build_embedded: Mix.env() == :prod,
       deps: deps(),
       aliases: aliases(),
-      preferred_cli_env: [coveralls: :test, "coveralls.html": :test, "coveralls.github": :test],
-      test_coverage: [tool: ExCoveralls],
 
       # Hex
       package: hex_package(),
@@ -62,9 +60,7 @@ defmodule GettextLLM.MixProject do
       # Code documentation
       {:ex_doc, ">= 0.0.0", only: [:dev], runtime: false},
       # Deps security audits
-      {:mix_audit, "~> 2.1", only: [:dev, :test], runtime: false},
-      # Coverage report tool
-      {:excoveralls, "~> 0.17", only: [:test], runtime: false}
+      {:mix_audit, "~> 2.1", only: [:dev, :test], runtime: false}
       # END --------------------------------- Developer Experience
     ]
   end
