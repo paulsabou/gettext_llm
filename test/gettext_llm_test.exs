@@ -100,7 +100,11 @@ defmodule GettextLLM.GettextLLMTest do
   describe "translate/3" do
     test "translates the sample folder" do
       {:ok, _} =
-        GettextLLM.translate(GettextLLM.Translator.TranslatorTest, "en", @samples_folder_path)
+        GettextLLM.translate(
+          GettextLLM.Translator.TranslatorTest,
+          %{ignored_languages: []},
+          @samples_folder_path
+        )
 
       {:ok,
        ~s"""

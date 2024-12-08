@@ -1,7 +1,7 @@
 defmodule GettextLLM.MixProject do
   use Mix.Project
 
-  @version "0.1.5"
+  @version "0.1.6"
 
   @description "Elixir Gettext LLM based translation library"
   @repo_url "https://github.com/paulsabou/gettext_llm"
@@ -45,6 +45,8 @@ defmodule GettextLLM.MixProject do
       # BEGIN --------------------------------- App core
       # Reading & writting PO files
       {:expo, "~> 1.1.0"},
+      # For detecting the default locale to avoid unnecessary translation
+      {:gettext, "~> 0.26.2"},
       # LLM API client & more
       {:langchain, "0.3.0-rc.0"},
 

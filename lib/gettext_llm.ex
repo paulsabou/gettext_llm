@@ -12,6 +12,14 @@ defmodule GettextLLM do
   def get_config() do
     config = Application.fetch_env!(:gettext_llm, __MODULE__)
 
+    default_locale =
+      if Keyword.has_key?(config, :gettext_backend) do
+        gettext_backend = Keyword.fetch!(config, :gettext_backend)
+        Gettext.get_locale(gettext_backend)
+      else
+        Gettext.get_locale()
+      end
+
     %{
       endpoint: %{
         adapter: Keyword.fetch!(config, :endpoint),
@@ -20,7 +28,8 @@ defmodule GettextLLM do
         config: Keyword.fetch!(config, :endpoint_config)
       },
       persona: Keyword.get(config, :persona, TranslatorLangchain.translator_persona_default()),
-      style: Keyword.get(config, :style, TranslatorLangchain.translator_style_default())
+      style: Keyword.get(config, :style, TranslatorLangchain.translator_style_default()),
+      ignored_languages: [default_locale]
     }
   end
 
@@ -30,10 +39,20 @@ defmodule GettextLLM do
     {:ok, results} = GettextLLM.Gettext.scan_root_folder(root_gettext_path)
 
     translate_po_folder = fn po_folder ->
-      po_folder.files
-      |> Enum.map(&translate_one_po_file(module, config, po_folder.language_code, &1))
-      |> Enum.map(fn {_status, count} -> count end)
-      |> Enum.sum()
+      if po_folder.language_code in config.ignored_languages do
+        Logger.info(
+          "Folder `#{po_folder.language_code}` appears in ignored languages [#{Enum.join(config.ignored_languages, ", ")}] - SKIPPING"
+        )
+
+        0
+      else
+        Logger.info("Folder `#{po_folder.language_code}` - starting processing ")
+
+        po_folder.files
+        |> Enum.map(&translate_one_po_file(module, config, po_folder.language_code, &1))
+        |> Enum.map(fn {_status, count} -> count end)
+        |> Enum.sum()
+      end
     end
 
     {:ok,

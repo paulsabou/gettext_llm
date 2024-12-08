@@ -13,7 +13,8 @@ defmodule GettextLLM.Translator.Specs do
   @type config() :: %{
           endpoint: endpoint(),
           persona: String.t(),
-          style: String.t()
+          style: String.t(),
+          ignored_languages: list(String.t())
         }
 
   @type opts() :: %{

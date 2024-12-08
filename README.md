@@ -17,7 +17,7 @@ The package can be installed by adding `gettext_llm` to your list of dependencie
 ```elixir
 def deps do
   [
-    {:gettext_llm, "~> 0.1.5", only: [:dev, :test], runtime: false}
+    {:gettext_llm, "~> 0.1.6", only: [:dev, :test], runtime: false}
   ]
 end
 ```
@@ -40,6 +40,7 @@ mix gettext.extract --merge
 import Config
 
 config :gettext_llm, GettextLLM,
+  gettext_backend: MyApp.Gettext <--- Optional
   persona:
     "You are translating messages for a website that connects people needing help with people that can provide help. You will provide translation that is casual but respectful and uses plain language.",
   style:
@@ -60,6 +61,7 @@ config :gettext_llm, GettextLLM,
 import Config
 
 config :gettext_llm, GettextLLM,
+  gettext_backend: MyApp.Gettext  <--- Optional
   persona:
     "You are translating messages for a website that connects people needing help with people that can provide help. You will provide translation that is casual but respectful and uses plain language.",
   style:
