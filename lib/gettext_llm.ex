@@ -29,7 +29,7 @@ defmodule GettextLLM do
       },
       persona: Keyword.get(config, :persona, TranslatorLangchain.translator_persona_default()),
       style: Keyword.get(config, :style, TranslatorLangchain.translator_style_default()),
-      ignored_languages: [default_locale]
+      ignored_languages: Keyword.get(config, :ignored_languages, [default_locale])
     }
   end
 

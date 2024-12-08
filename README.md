@@ -2,7 +2,7 @@
 
 ## Automated translations
 
-Translating text in from one language to another requires the translator to be accurate and to maintain a consistent tone/persona and style. 
+Translating from one language to another requires the translator to be accurate and to maintain a consistent tone/persona and style. 
 Scaling these to multiple languages is challenging. Automated translation with LLM's provide a "good enough" alternative in many use cases.
 
 **Elixir Gettext LLM** library allows you to translate all Gettext PO folders/files in your project using any LLM endpoint supported by `langchain`. 
@@ -40,7 +40,8 @@ mix gettext.extract --merge
 import Config
 
 config :gettext_llm, GettextLLM,
-  gettext_backend: MyApp.Gettext <--- Optional
+  # gettext_backend: MyApp.Gettext <--- Optional
+  # ignored_languages: ["en"] <--- Optional
   persona:
     "You are translating messages for a website that connects people needing help with people that can provide help. You will provide translation that is casual but respectful and uses plain language.",
   style:
@@ -61,7 +62,8 @@ config :gettext_llm, GettextLLM,
 import Config
 
 config :gettext_llm, GettextLLM,
-  gettext_backend: MyApp.Gettext  <--- Optional
+  # gettext_backend: MyApp.Gettext  <--- Optional
+  # ignored_languages: ["en"] <--- Optional
   persona:
     "You are translating messages for a website that connects people needing help with people that can provide help. You will provide translation that is casual but respectful and uses plain language.",
   style:
