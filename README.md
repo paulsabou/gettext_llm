@@ -1,15 +1,14 @@
 # Gettext LLM
 
-## When to use Gettext LLM?
+## Automated translations
 
-For most apps use cases LLM's are good enough at translating many languages.
+Translating text in from one language to another requires the translator to be accurate and to maintain a consistent tone/persona and style. 
+Scaling these to multiple languages is challenging. Automated translation with LLM's provide a "good enough" alternative in many use cases.
 
-**Elixir Gettext LLM** library allows you to translate all Gettext PO folders/files in your project using any LLM endpoint supported by `langchain`. The library intended use is from command line (ie. locally on the dev machine) or part of a CI/CD pipeline.
+**Elixir Gettext LLM** library allows you to translate all Gettext PO folders/files in your project using any LLM endpoint supported by `langchain`. 
+The library provides several mix tasks that can be run directly in your Elixir/Phoenix project from the command line (ie. locally on the dev machine) or part of a CI/CD pipeline.
 
-## When NOT to use Gettext LLM
-
-For some apps or languages LLM's are not good enough. In these cases you will probably be better off with a human translator. The human translator could work on it's own or part of a hybrind setup. A typical setup has the draft translation version proposed by an LLM and the final approval (and corrections) are performed by the human. Good open source solutions for such a setup are [Kanta](https://github.com/curiosum-dev/kanta) or [Weblate](https://github.com/WeblateOrg/weblate).
-
+`gettext_llm` provides configurable tone/persona and style. This allows you to "shape" your resulting translations into something that is compatible with your app audience & brand.
 
 ## Installation
 
@@ -18,7 +17,7 @@ The package can be installed by adding `gettext_llm` to your list of dependencie
 ```elixir
 def deps do
   [
-    {:gettext_llm, "~> 0.1.4", only: [:dev, :test], runtime: false}
+    {:gettext_llm, "~> 0.1.5", only: [:dev, :test], runtime: false}
   ]
 end
 ```
@@ -99,9 +98,11 @@ mix gettext_llm.translate info
 mix help gettext_llm.translate 
 ```
 
-
 ## Documentation
 Documentation can be be found at <https://hexdocs.pm/gettext_llm>.
+
+## Misc
+For some apps or languages LLM's are not good enough. In these cases you will probably be better off with a human translator. The human translator could work on it's own or part of a hybrind setup. A typical setup has the draft translation version proposed by an LLM and the final approval (and corrections) are performed by the human. Good open source solutions for such a setup are [Kanta](https://github.com/curiosum-dev/kanta) or [Weblate](https://github.com/WeblateOrg/weblate).
 
 ## Thanks
 Special thanks to [Adrian Codausi](https://github.com/AdrianCDS) & [Goran Codausi](https://github.com/goran-cds) for inspiring me to build this.

@@ -3,6 +3,7 @@ defmodule GettextLLM do
   Gettext LLM main functions.
   """
 
+  require Logger
   alias Expo.Message
   alias GettextLLM.Translator.Specs
   alias GettextLLM.Translator.TranslatorLangchain
@@ -44,14 +45,28 @@ defmodule GettextLLM do
   @spec translate_one_po_file(module(), Specs.config(), String.t(), Path.t()) ::
           {:ok, non_neg_integer()} | {:error, any()}
   defp translate_one_po_file(module, config, po_language_code, po_file_path) do
-    with {:ok, po_file} <- Expo.PO.parse_file(po_file_path),
-         translated_message_count =
-           Enum.count(po_file.messages, &empty_message_translation?(&1)),
-         po_messages <-
+    translate_messages = fn po_file ->
+      translated_message_count =
+        Enum.count(po_file.messages, &empty_message_translation?(&1))
+
+      Logger.info(
+        "File `#{po_file_path}` has #{translated_message_count} entries that need to be translated to `#{po_language_code}`"
+      )
+
+      if(translated_message_count > 0,
+        do:
+          {translated_message_count,
            Enum.map(
              po_file.messages,
              &translate_one_message(module, config, po_language_code, &1)
-           ),
+           )},
+        else: {0, po_file.messages}
+      )
+    end
+
+    with {:ok, po_file} <- Expo.PO.parse_file(po_file_path),
+         {translated_message_count, po_messages} <-
+           translate_messages.(po_file),
          updated_po_file = %{
            po_file
            | messages: po_messages
@@ -66,6 +81,8 @@ defmodule GettextLLM do
     case message do
       %Message.Singular{:msgstr => msgstr, :msgid => [value_to_translate]}
       when msgstr == [""] ->
+        Logger.info("* Translating message `#{value_to_translate}` to `#{po_language_code}` ")
+
         {:ok, translated_value} =
           module.translate(config, %{
             source_message: value_to_translate,
@@ -78,28 +95,40 @@ defmodule GettextLLM do
         }
 
       %Message.Plural{
-        :msgstr => %{0 => [""], 1 => [""]},
+        :msgstr => %{0 => [translated_value1], 1 => [translated_value2]},
         :msgid => [value_to_translate_singular],
         :msgid_plural => [value_to_translate_plural]
       } ->
-        {:ok, translated_value_singular} =
-          module.translate(config, %{
-            source_message: value_to_translate_singular,
-            target_language_code: po_language_code
-          })
+        if empty_string?(translated_value1) || empty_string?(translated_value2) do
+          Logger.info(
+            "* Translating plural message `#{value_to_translate_singular}` / `#{value_to_translate_plural}` to `#{po_language_code}` "
+          )
 
-        {:ok, translated_value_plural} =
-          module.translate(config, %{
-            source_message: value_to_translate_plural,
-            target_language_code: po_language_code
-          })
+          {:ok, translated_value_singular} =
+            module.translate(config, %{
+              source_message: value_to_translate_singular,
+              target_language_code: po_language_code
+            })
 
-        %{
+          {:ok, translated_value_plural} =
+            module.translate(config, %{
+              source_message: value_to_translate_plural,
+              target_language_code: po_language_code
+            })
+
+          %{
+            message
+            | msgstr: %{0 => [translated_value_singular], 1 => [translated_value_plural]}
+          }
+        else
           message
-          | msgstr: %{0 => [translated_value_singular], 1 => [translated_value_plural]}
-        }
+        end
 
-      _ ->
+      %{:msgid => [value_to_translate]} ->
+        Logger.info(
+          "* Translating message `#{value_to_translate}` to `#{po_language_code}` - SKIPPED "
+        )
+
         message
     end
   end
@@ -119,7 +148,7 @@ defmodule GettextLLM do
         empty_string?(value)
 
       %Message.Plural{:msgstr => %{0 => [value1], 1 => [value2]}} ->
-        !empty_string?(value1) && !empty_string?(value2)
+        empty_string?(value1) || empty_string?(value2)
     end
   end
 end
