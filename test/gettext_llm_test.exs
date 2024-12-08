@@ -37,6 +37,12 @@ defmodule GettextLLM.GettextLLMTest do
                 #, elixir-autogen, elixir-format
                 msgid "must be a valid email address"
                 msgstr ""
+
+                #, elixir-autogen, elixir-format
+                msgid "singular - should be at most %{count} byte(s)"
+                msgid_plural "plural - should be at most %{count} byte(s)"
+                msgstr[0] ""
+                msgstr[1] ""
                 """
               }
             ]
@@ -66,6 +72,16 @@ defmodule GettextLLM.GettextLLMTest do
                 #, elixir-autogen, elixir-format
                 msgid "must be a valid email address"
                 msgstr ""
+
+                #, elixir-autogen, elixir-format
+                msgid "singular - should be at most %{count} byte(s)"
+                msgid_plural "plural - should be at most %{count} byte(s)"
+                msgstr[0] ""
+                msgstr[1] ""
+
+                #, elixir-autogen, elixir-format
+                msgid "invalid name"
+                msgstr "invalid name already translated"
                 """
               }
             ]
@@ -107,6 +123,16 @@ defmodule GettextLLM.GettextLLMTest do
        #, elixir-autogen, elixir-format
        msgid "must be a valid email address"
        msgstr "must be a valid email address - fr"
+
+       #, elixir-autogen, elixir-format
+       msgid "singular - should be at most %{count} byte(s)"
+       msgid_plural "plural - should be at most %{count} byte(s)"
+       msgstr[0] "singular - should be at most %{count} byte(s) - fr"
+       msgstr[1] "plural - should be at most %{count} byte(s) - fr"
+
+       #, elixir-autogen, elixir-format
+       msgid "invalid name"
+       msgstr "invalid name already translated"
        """} =
         GettextHelper.read_translation_file(@samples_folder_path, "fr", "errors")
     end
