@@ -5,6 +5,10 @@ defmodule GettextLLM.Gettext do
 
   @lc_messages "LC_MESSAGES"
 
+  @doc """
+  Scans the root gettext folder (ie. priv/gettext) and retrieves all the langage
+  folders and the po files inside them.
+  """
   @spec scan_root_folder(Path.t()) ::
           {
             :ok,

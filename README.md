@@ -40,7 +40,6 @@ mix gettext.extract --merge
 import Config
 
 config :gettext_llm, GettextLLM,
-  # gettext_backend: MyApp.Gettext <--- Optional
   # ignored_languages: ["en"] <--- Optional
   persona:
     "You are translating messages for a website that connects people needing help with people that can provide help. You will provide translation that is casual but respectful and uses plain language.",
@@ -62,7 +61,6 @@ config :gettext_llm, GettextLLM,
 import Config
 
 config :gettext_llm, GettextLLM,
-  # gettext_backend: MyApp.Gettext  <--- Optional
   # ignored_languages: ["en"] <--- Optional
   persona:
     "You are translating messages for a website that connects people needing help with people that can provide help. You will provide translation that is casual but respectful and uses plain language.",

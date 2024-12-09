@@ -1,24 +1,17 @@
 defmodule GettextLLM do
-  @moduledoc """
-  Gettext LLM main functions.
-  """
+  @moduledoc File.read!(Path.expand("./README.md"))
 
   require Logger
   alias Expo.Message
   alias GettextLLM.Translator.Specs
   alias GettextLLM.Translator.TranslatorLangchain
 
+  @doc """
+  Loads the `gettext_llm` configuration from the app configuration.
+  """
   @spec get_config() :: Specs.config()
   def get_config() do
     config = Application.fetch_env!(:gettext_llm, __MODULE__)
-
-    default_locale =
-      if Keyword.has_key?(config, :gettext_backend) do
-        gettext_backend = Keyword.fetch!(config, :gettext_backend)
-        Gettext.get_locale(gettext_backend)
-      else
-        Gettext.get_locale()
-      end
 
     %{
       endpoint: %{
@@ -29,10 +22,14 @@ defmodule GettextLLM do
       },
       persona: Keyword.get(config, :persona, TranslatorLangchain.translator_persona_default()),
       style: Keyword.get(config, :style, TranslatorLangchain.translator_style_default()),
-      ignored_languages: Keyword.get(config, :ignored_languages, [default_locale])
+      ignored_languages: Keyword.get(config, :ignored_languages, [])
     }
   end
 
+  @doc """
+  Translates all the PO files inside the language folders using a specific
+  cnfiguration and LLM endpoint.
+  """
   @spec translate(module(), Specs.config(), Path.t()) ::
           {:ok, non_neg_integer()} | {:error, any()}
   def translate(module, config, root_gettext_path) do

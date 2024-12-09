@@ -17,7 +17,16 @@ defmodule GettextLLM.MixProject do
 
       # Hex
       package: hex_package(),
-      description: @description
+      description: @description,
+
+      # Docs
+      name: "gettext_llm",
+      docs: [
+        source_ref: "v#{@version}",
+        main: "GettextLLM",
+        source_url: @repo_url
+        # extras: ["CHANGELOG.md"]
+      ]
     ]
   end
 
