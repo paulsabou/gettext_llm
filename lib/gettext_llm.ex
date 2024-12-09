@@ -94,9 +94,10 @@ defmodule GettextLLM do
 
   @spec translate_one_message(module(), Specs.config(), String.t(), Message.t()) :: Message.t()
   defp translate_one_message(module, config, po_language_code, message) do
-    case message do
-      %Message.Singular{:msgstr => msgstr, :msgid => [value_to_translate]}
-      when msgstr == [""] ->
+    handle_singular_message = fn message ->
+      %Message.Singular{:msgstr => msgstr, :msgid => value_to_translate} = message
+
+      if empty_string?(to_str(msgstr)) do
         Logger.info("* Translating message `#{value_to_translate}` to `#{po_language_code}` ")
 
         {:ok, translated_value} =
@@ -109,12 +110,22 @@ defmodule GettextLLM do
           message
           | msgstr: [translated_value]
         }
+      else
+        message
+      end
+    end
 
-      %Message.Plural{
-        :msgstr => %{0 => [translated_value1], 1 => [translated_value2]},
-        :msgid => [value_to_translate_singular],
-        :msgid_plural => [value_to_translate_plural]
-      } ->
+    handle_plural_message = fn
+      message ->
+        %Message.Plural{
+          :msgstr => %{0 => multi_translated_value1, 1 => multi_translated_value2},
+          :msgid => [value_to_translate_singular],
+          :msgid_plural => [value_to_translate_plural]
+        } = message
+
+        translated_value1 = to_str(multi_translated_value1)
+        translated_value2 = to_str(multi_translated_value2)
+
         if empty_string?(translated_value1) || empty_string?(translated_value2) do
           Logger.info(
             "* Translating plural message `#{value_to_translate_singular}` / `#{value_to_translate_plural}` to `#{po_language_code}` "
@@ -139,13 +150,14 @@ defmodule GettextLLM do
         else
           message
         end
+    end
 
-      %{:msgid => [value_to_translate]} ->
-        Logger.info(
-          "* Translating message `#{value_to_translate}` to `#{po_language_code}` - SKIPPED "
-        )
+    case message do
+      %Message.Singular{} ->
+        handle_singular_message.(message)
 
-        message
+      %Message.Plural{} ->
+        handle_plural_message.(message)
     end
   end
 
@@ -160,11 +172,15 @@ defmodule GettextLLM do
 
   defp empty_message_translation?(message) do
     case message do
-      %Message.Singular{:msgstr => [value]} ->
-        empty_string?(value)
+      %Message.Singular{:msgstr => value} ->
+        empty_string?(to_str(value))
 
-      %Message.Plural{:msgstr => %{0 => [value1], 1 => [value2]}} ->
-        empty_string?(value1) || empty_string?(value2)
+      %Message.Plural{:msgstr => %{0 => value1, 1 => value2}} ->
+        empty_string?(to_str(value1)) || empty_string?(to_str(value2))
     end
+  end
+
+  defp to_str(value) do
+    Enum.join(value, " ")
   end
 end
