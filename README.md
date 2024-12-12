@@ -27,7 +27,8 @@ end
 ### 1. Use `gettext` to extract & merge
 `gettext_llm` translates PO files. Use `gettext` to extract all the translated messages from your app into POT files & merge them into their respective PO files
 ```
-mix gettext.extract --merge
+mix gettext.extract
+mix gettext.merge priv/gettext --no-fuzzy
 ```
 
 ### 2. Add the `gettext_llm` in your `config.exs` 
