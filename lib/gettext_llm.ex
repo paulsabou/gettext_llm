@@ -40,7 +40,7 @@ defmodule GettextLLM do
           "Folder `#{po_folder.language_code}` appears in ignored languages [#{Enum.join(config.ignored_languages, ", ")}] - SKIPPING"
         )
 
-        0
+        {:ok, true}
       else
         Logger.info("Folder `#{po_folder.language_code}` - starting validation ")
 
@@ -270,12 +270,12 @@ defmodule GettextLLM do
   defp validate_one_message(message) do
     %Message.Singular{:msgstr => msgstr, :msgid => msgid} = message
 
-    original_message_variables = GettextLLM.Gettext.variables_from_string(msgid)
-    translated_message_variables = GettextLLM.Gettext.variables_from_string(msgstr)
+    original_message_variables = GettextLLM.Gettext.variables_from_string(to_str(msgid))
+    translated_message_variables = GettextLLM.Gettext.variables_from_string(to_str(msgstr))
 
     if original_message_variables != translated_message_variables do
       {:error,
-       "Message `#{msgid}` has variables that are not present in the translated message `#{msgstr}`"}
+       "Message `#{to_str(msgid)}` has variables that are not present in the translated message `#{to_str(msgstr)}`"}
     else
       {:ok, message}
     end
