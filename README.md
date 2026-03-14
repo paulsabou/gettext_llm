@@ -76,7 +76,7 @@ config :gettext_llm, GettextLLM,
   }
 ```
 
-### 3. Run `gettext_llm` mix task
+### 3. Run `gettext_llm` mix task for translation
 
 #### Run using the default gettext location (ie. priv/gettext)
 ```
@@ -88,14 +88,20 @@ mix gettext_llm.translate translate
 mix gettext_llm.translate translate my_path/gettext 
 ```
 
+### 4. Run `gettext_llm` mix task for validating variables in translations
+
+#### Run using the default gettext location (ie. priv/gettext)
+```
+mix gettext_llm.translate validate
+```
+
+#### Run using a specific gettext location
+```
+mix gettext_llm.translate validate my_path/gettext 
+```
+
 
 ### Other `gettext_llm` mix task
-
-#### Validate translations
-```
-mix help gettext_llm.validate 
-```
-
 
 #### Check that your configuration is correct
 ```
@@ -107,8 +113,22 @@ mix gettext_llm.translate info
 mix help gettext_llm.translate 
 ```
 
+## Why do we need validation?
+LLM's are probabilistic and as such there are cases when gettext variables are translated instead of being kept as they are in the original. 
+
+For example a message like <I'm %{year} old> should be translated in dutch <Ik ben %{year} oud>. This is correct both as
+translation but also the dutch translation keeps the original variable names. This way gettext message templates work also with the translation. 
+
+In some cases the LLM can mistakenly translate also the variable names like this <Ik ben %{jaar} oud>. When that happens
+the translation template ends up broken and we get a runtime error when the template is used.
+
+What can you do when you discover these validation errors?
+* tweak your translation prompt in config
+* last resort - fix variable names by hand in translation po files
+
 ## Documentation
 Documentation can be be found at <https://hexdocs.pm/gettext_llm>.
+
 
 ## Misc
 For some apps or languages LLM's are not good enough. In these cases you will probably be better off with a human translator. The human translator could work on it's own or part of a hybrind setup. A typical setup has the draft translation version proposed by an LLM and the final approval (and corrections) are performed by the human. Good open source solutions for such a setup are [Kanta](https://github.com/curiosum-dev/kanta) or [Weblate](https://github.com/WeblateOrg/weblate).
