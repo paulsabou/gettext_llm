@@ -12,7 +12,7 @@ The package can be installed by adding `gettext_llm` to your list of dependencie
 ```elixir
 def deps do
   [
-      {:gettext_llm, "0.2.0", only: [:dev, :test]}
+      {:gettext_llm, "0.3.0", only: [:dev, :test]}
   ]
 end
 ```
@@ -78,7 +78,7 @@ config :gettext_llm, GettextLLM,
 See the package [installation usage documentation](https://hexdocs.pm/gettext_llm/GettextLLM.html#module-usage) for more details.
 
 
-### 3. Run `gettext_llm` mix task
+### 3. Run `gettext_llm` mix task to translate
 
 #### Run using the default gettext location (ie. priv/gettext)
 ```
@@ -88,4 +88,16 @@ mix gettext_llm.translate translate
 #### Run using a specific gettext location
 ```
 mix gettext_llm.translate translate my_path/gettext 
+```
+
+### 4. Run `gettext_llm` mix task to validate
+
+#### Run using the default gettext location (ie. priv/gettext)
+```
+mix gettext_llm.translate validate
+```
+
+#### Run using a specific gettext location
+```
+mix gettext_llm.translate validate my_path/gettext 
 ```
