@@ -111,7 +111,8 @@ defmodule GettextLLM.GettextTest do
 
   describe "validate/2" do
     test "validates the sample folder" do
-      {:error,results} = GettextLLM.validate(GettextLLM.get_config(),"priv/gettext_invalid_variables")
+      {:error, results} =
+        GettextLLM.validate(GettextLLM.get_config(), "priv/gettext_invalid_variables")
 
       assert length(results) == 2
 
@@ -130,7 +131,6 @@ defmodule GettextLLM.GettextTest do
                  ]
                }
              ]
-
     end
   end
 end

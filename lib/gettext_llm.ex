@@ -33,7 +33,6 @@ defmodule GettextLLM do
   @spec validate(Specs.config(), Path.t()) ::
           {:ok, true} | {:error, list(%{file: Path.t(), errors: list(String.t())})}
   def validate(config, root_gettext_path) do
-
     validate_po_folder = fn po_folder ->
       if po_folder.language_code in config.ignored_languages do
         Logger.info(

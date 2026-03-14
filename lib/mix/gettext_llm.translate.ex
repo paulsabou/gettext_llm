@@ -55,15 +55,20 @@ defmodule Mix.Tasks.GettextLlm.Translate do
           {:ok, true} ->
             Mix.shell().info("GettextLLM validation passed. No errors found")
             System.halt(0)
+
           {:error, results} ->
             Mix.shell().error("GettextLLM validation failed. #{length(results)} error(s) found\n")
+
             Enum.each(results, fn result ->
               Mix.shell().error(" ----- #{result.file} ----- ")
+
               Enum.each(result.errors, fn err ->
                 Mix.shell().error(" * #{err}\n")
               end)
+
               Mix.shell().error("")
             end)
+
             System.halt(1)
         end
 
