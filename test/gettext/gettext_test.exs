@@ -100,4 +100,19 @@ defmodule GettextLLM.GettextTest do
       } = Enum.find(results, &(&1.language_code == "fr"))
     end
   end
+
+  describe "extract_variables_from_string/1" do
+    test "extracts variables from a string" do
+      string = "singular - should be at most %{count} byte(s) and at least %{min} byte(s)"
+      variables = GettextLLM.Gettext.variables_from_string(string)
+      assert variables == ["count", "min"]
+    end
+  end
+
+  describe "validate/2" do
+    test "validates the sample folder" do
+      result = GettextLLM.validate(GettextLLM.get_config(),"priv/gettext_invalid_variables")
+      IO.inspect(result)
+    end
+  end
 end

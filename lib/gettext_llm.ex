@@ -27,6 +27,64 @@ defmodule GettextLLM do
   end
 
   @doc """
+  Validates all the PO files inside the language folders using a specific
+  configuration and LLM endpoint.
+  """
+  @spec validate(Specs.config(), Path.t()) ::
+          {:ok, true} | {:error, list(%{file: Path.t(), errors: list(String.t())})}
+  def validate(config, root_gettext_path) do
+
+    validate_po_folder = fn po_folder ->
+      if po_folder.language_code in config.ignored_languages do
+        Logger.info(
+          "Folder `#{po_folder.language_code}` appears in ignored languages [#{Enum.join(config.ignored_languages, ", ")}] - SKIPPING"
+        )
+
+        0
+      else
+        Logger.info("Folder `#{po_folder.language_code}` - starting validation ")
+
+        files_validation_results =
+          Enum.map(po_folder.files, fn file ->
+            case validate_translation_one_po_file(file) do
+              {:ok, true} ->
+                {:ok, file}
+
+              {:error, errors} ->
+                {:error, %{file: file, errors: errors}}
+            end
+          end)
+
+        if Enum.all?(files_validation_results, fn {status, _} -> status == :ok end) do
+          {:ok, true}
+        else
+          # Collect all the errors
+          errors =
+            files_validation_results
+            |> Enum.filter(fn {status, _} -> status == :error end)
+            |> Enum.map(fn {_status, %{file: file, errors: errors}} ->
+              %{file: file, errors: errors}
+            end)
+
+          {:error, errors}
+        end
+      end
+    end
+
+    {:ok, results} = GettextLLM.Gettext.scan_root_folder(root_gettext_path)
+
+    errors =
+      Enum.map(results, &validate_po_folder.(&1))
+      |> Enum.filter(fn {status, _} -> status == :error end)
+
+    if length(errors) > 0 do
+      {:error, errors}
+    else
+      {:ok, true}
+    end
+  end
+
+  @doc """
   Translates all the PO files inside the language folders using a specific
   cnfiguration and LLM endpoint.
   """
@@ -56,6 +114,30 @@ defmodule GettextLLM do
      results
      |> Enum.map(&translate_po_folder.(&1))
      |> Enum.sum()}
+  end
+
+  @spec validate_translation_one_po_file(Path.t()) ::
+          {:ok, true} | {:error, list(String.t())}
+  defp validate_translation_one_po_file(po_file_path) do
+    validate_messages = fn po_file ->
+      invalid_messages =
+        po_file.messages
+        |> Enum.filter(fn message -> !empty_message_translation?(message) end)
+        |> Enum.map(&validate_one_message(&1))
+        |> Enum.filter(fn {status, _} -> status == :error end)
+        |> Enum.map(fn {_status, message} -> message end)
+
+      if length(invalid_messages) > 0 do
+        {:error, invalid_messages}
+      else
+        {:ok, po_file}
+      end
+    end
+
+    with {:ok, po_file} <- Expo.PO.parse_file(po_file_path),
+         {:ok, _} <- validate_messages.(po_file) do
+      {:ok, true}
+    end
   end
 
   @spec translate_one_po_file(module(), Specs.config(), String.t(), Path.t()) ::
@@ -182,5 +264,20 @@ defmodule GettextLLM do
 
   defp to_str(value) do
     Enum.join(value, " ")
+  end
+
+  @spec validate_one_message(Message.t()) :: {:ok, String.t()} | {:error, String.t()}
+  defp validate_one_message(message) do
+    %Message.Singular{:msgstr => msgstr, :msgid => msgid} = message
+
+    original_message_variables = GettextLLM.Gettext.variables_from_string(msgid)
+    translated_message_variables = GettextLLM.Gettext.variables_from_string(msgstr)
+
+    if original_message_variables != translated_message_variables do
+      {:error,
+       "Message `#{msgid}` has variables that are not present in the translated message `#{msgstr}`"}
+    else
+      {:ok, message}
+    end
   end
 end

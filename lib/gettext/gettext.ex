@@ -2,7 +2,6 @@ defmodule GettextLLM.Gettext do
   @moduledoc """
   Gettext folder & file scanning functions.
   """
-
   @lc_messages "LC_MESSAGES"
 
   @doc """
@@ -44,5 +43,16 @@ defmodule GettextLLM.Gettext do
            Enum.filter(files, &(!File.dir?(&1) && String.ends_with?(&1, ".po"))) do
       {:ok, Enum.map(po_files, &Path.join([language_folder_path, @lc_messages, &1]))}
     end
+  end
+
+  @spec variables_from_string(String.t()) :: list(String.t())
+  def variables_from_string(string) do
+    Regex.scan(~r/%{[^}]+}/, string)
+    |> Enum.map(fn [match] ->
+      match
+      |> String.trim_leading("%{")
+      |> String.trim_trailing("}")
+    end)
+    |> Enum.uniq()
   end
 end
