@@ -65,7 +65,7 @@ defmodule GettextLLM.MixProject do
       # Types annotations checks
       {:dialyxir, "~> 1.4", runtime: false},
       # Code style checker
-      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.7.17", only: [:dev, :test], runtime: false},
       # Security checks
       {:sobelow, "~> 0.13", only: [:dev, :test], runtime: false},
       # Code documentation
