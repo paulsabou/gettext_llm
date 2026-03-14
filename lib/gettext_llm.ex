@@ -297,6 +297,7 @@ defmodule GettextLLM do
     |> Enum.reduce_while(:ok, fn
       {0, translated}, _acc ->
         translated_vars = GettextLLM.Gettext.variables_from_string(to_str(translated))
+
         if singular_source_vars != translated_vars do
           {:halt,
            {:error,
@@ -307,6 +308,7 @@ defmodule GettextLLM do
 
       {_idx, translated}, _acc ->
         translated_vars = GettextLLM.Gettext.variables_from_string(to_str(translated))
+
         if plural_source_vars != translated_vars do
           {:halt,
            {:error,

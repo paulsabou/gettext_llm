@@ -127,7 +127,8 @@ defmodule GettextLLM.GettextTest do
                %{
                  file: "priv/gettext_invalid_variables/fr/LC_MESSAGES/errors.po",
                  errors: [
-                   "Message `must be a valid email address %{year} %{month}` has variables that are not present in the translated message `must be a valid email address %{year} %{mois} - fr`"
+                   "Message `must be a valid email address %{year} %{month}` has variables that are not present in the translated message `must be a valid email address %{year} %{mois} - fr`",
+                   "Plural message (singular form) `should have %{year} item(s)` has variables that are not present in the translated message `should have %{an} item(s) - fr`"
                  ]
                }
              ]

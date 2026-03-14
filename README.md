@@ -17,7 +17,7 @@ The package can be installed by adding `gettext_llm` to your list of dependencie
 ```elixir
 def deps do
   [
-      {:gettext_llm, "0.2.1", only: [:dev, :test]}
+      {:gettext_llm, "0.2.2", only: [:dev, :test]}
   ]
 end
 ```
