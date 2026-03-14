@@ -267,8 +267,8 @@ defmodule GettextLLM do
     Enum.join(value, " ")
   end
 
-  @spec validate_one_message(Message.t()) :: {:ok, String.t()} | {:error, String.t()}
-  defp validate_one_message(message) do
+  @spec validate_one_message(Message.t()) :: {:ok, Message.t()} | {:error, String.t()}
+  defp validate_one_message(%Message.Singular{} = message) do
     %Message.Singular{:msgstr => msgstr, :msgid => msgid} = message
 
     original_message_variables = GettextLLM.Gettext.variables_from_string(to_str(msgid))
@@ -279,6 +279,45 @@ defmodule GettextLLM do
        "Message `#{to_str(msgid)}` has variables that are not present in the translated message `#{to_str(msgstr)}`"}
     else
       {:ok, message}
+    end
+  end
+
+  defp validate_one_message(%Message.Plural{} = message) do
+    %Message.Plural{
+      msgid: msgid,
+      msgid_plural: msgid_plural,
+      msgstr: msgstr
+    } = message
+
+    singular_source_vars = GettextLLM.Gettext.variables_from_string(to_str(msgid))
+    plural_source_vars = GettextLLM.Gettext.variables_from_string(to_str(msgid_plural))
+
+    msgstr
+    |> Enum.sort_by(fn {k, _} -> k end)
+    |> Enum.reduce_while(:ok, fn
+      {0, translated}, _acc ->
+        translated_vars = GettextLLM.Gettext.variables_from_string(to_str(translated))
+        if singular_source_vars != translated_vars do
+          {:halt,
+           {:error,
+            "Plural message (singular form) `#{to_str(msgid)}` has variables that are not present in the translated message `#{to_str(translated)}`"}}
+        else
+          {:cont, :ok}
+        end
+
+      {_idx, translated}, _acc ->
+        translated_vars = GettextLLM.Gettext.variables_from_string(to_str(translated))
+        if plural_source_vars != translated_vars do
+          {:halt,
+           {:error,
+            "Plural message (plural form) `#{to_str(msgid_plural)}` has variables that are not present in the translated message `#{to_str(translated)}`"}}
+        else
+          {:cont, :ok}
+        end
+    end)
+    |> case do
+      :ok -> {:ok, message}
+      {:error, reason} -> {:error, reason}
     end
   end
 end
