@@ -17,7 +17,7 @@ The package can be installed by adding `gettext_llm` to your list of dependencie
 ```elixir
 def deps do
   [
-      {:gettext_llm, "0.2.0", only: [:dev, :test]}
+      {:gettext_llm, "0.3.0", only: [:dev, :test]}
   ]
 end
 ```
@@ -90,6 +90,12 @@ mix gettext_llm.translate translate my_path/gettext
 
 
 ### Other `gettext_llm` mix task
+
+#### Validate translations
+```
+mix help gettext_llm.validate 
+```
+
 
 #### Check that your configuration is correct
 ```

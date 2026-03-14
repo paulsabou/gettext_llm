@@ -11,6 +11,16 @@ defmodule Mix.Tasks.GettextLlm.Translate do
       mix gettext_llm.translate translate my_path/gettext
       ```
 
+   * Validate using default gettext folder (priv/gettext)
+      ```
+      mix gettext_llm.translate validate
+      ```
+
+   * Validate using specific gettext folder
+      ```
+      mix gettext_llm.translate validate my_path/gettext
+      ```
+
    * Display info (including current configuration)
       ```
       mix gettext_llm.translate info
@@ -37,6 +47,18 @@ defmodule Mix.Tasks.GettextLlm.Translate do
     case Enum.at(args, 0, "info") do
       "info" ->
         display_info(gettext_root_dir, config)
+
+      "validate" ->
+        Mix.shell().info("GettextLLM validation started")
+
+        case GettextLLM.validate(config, Path.join([gettext_root_dir])) do
+          {:ok, true} ->
+            Mix.shell().info("GettextLLM validation passed. No errors found")
+            System.exit(0)
+          {:error, results} ->
+            Mix.shell().error("GettextLLM validation failed. #{length(results)} errors found")
+            System.exit(1)
+        end
 
       "translate" ->
         Mix.shell().info("GettextLLM translation started")

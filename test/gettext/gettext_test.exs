@@ -111,8 +111,26 @@ defmodule GettextLLM.GettextTest do
 
   describe "validate/2" do
     test "validates the sample folder" do
-      result = GettextLLM.validate(GettextLLM.get_config(),"priv/gettext_invalid_variables")
-      IO.inspect(result)
+      {:error,results} = GettextLLM.validate(GettextLLM.get_config(),"priv/gettext_invalid_variables")
+
+      assert length(results) == 2
+
+      assert Enum.sort_by(results, & &1.file) == [
+               %{
+                 file: "priv/gettext_invalid_variables/fr/LC_MESSAGES/default.po",
+                 errors: [
+                   "Message `Actions %{year} %{month}` has variables that are not present in the translated message `Actions %{an} %{month} - fr`",
+                   "Message `close %{year} %{month}` has variables that are not present in the translated message `close %{an} %{mois} - fr`"
+                 ]
+               },
+               %{
+                 file: "priv/gettext_invalid_variables/fr/LC_MESSAGES/errors.po",
+                 errors: [
+                   "Message `must be a valid email address %{year} %{month}` has variables that are not present in the translated message `must be a valid email address %{year} %{mois} - fr`"
+                 ]
+               }
+             ]
+
     end
   end
 end

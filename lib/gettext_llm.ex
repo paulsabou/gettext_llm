@@ -74,8 +74,10 @@ defmodule GettextLLM do
     {:ok, results} = GettextLLM.Gettext.scan_root_folder(root_gettext_path)
 
     errors =
-      Enum.map(results, &validate_po_folder.(&1))
+      results
+      |> Enum.map(&validate_po_folder.(&1))
       |> Enum.filter(fn {status, _} -> status == :error end)
+      |> Enum.flat_map(fn {:error, payload} -> List.wrap(payload) end)
 
     if length(errors) > 0 do
       {:error, errors}
