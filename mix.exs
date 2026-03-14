@@ -55,9 +55,9 @@ defmodule GettextLLM.MixProject do
       # Reading & writting PO files
       {:expo, "~> 1.1.0"},
       # For detecting the default locale to avoid unnecessary translation
-      {:gettext, "~> 0.26.2"},
+      {:gettext, "~> 1.0.2"},
       # LLM API client & more
-      {:langchain, "0.3.0-rc.0"},
+      {:langchain, "~> 0.6.2"},
 
       # END --------------------------------- App core
 
