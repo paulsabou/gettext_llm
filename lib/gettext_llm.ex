@@ -186,6 +186,8 @@ defmodule GettextLLM do
         {:ok, translated_value} =
           module.translate(config, %{
             source_message: value_to_translate,
+            source_message_variables:
+              GettextLLM.Gettext.variables_from_string(to_str(value_to_translate)),
             target_language_code: po_language_code
           })
 
@@ -217,12 +219,16 @@ defmodule GettextLLM do
           {:ok, translated_value_singular} =
             module.translate(config, %{
               source_message: value_to_translate_singular,
+              source_message_variables:
+                GettextLLM.Gettext.variables_from_string(to_str(value_to_translate_singular)),
               target_language_code: po_language_code
             })
 
           {:ok, translated_value_plural} =
             module.translate(config, %{
               source_message: value_to_translate_plural,
+              source_message_variables:
+                GettextLLM.Gettext.variables_from_string(to_str(value_to_translate_plural)),
               target_language_code: po_language_code
             })
 
@@ -264,7 +270,11 @@ defmodule GettextLLM do
   end
 
   defp to_str(value) do
-    Enum.join(value, " ")
+    if is_list(value) do
+      Enum.join(value, " ")
+    else
+      value
+    end
   end
 
   @spec validate_one_message(Message.t()) :: {:ok, Message.t()} | {:error, String.t()}

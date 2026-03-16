@@ -19,6 +19,7 @@ defmodule GettextLLM.Translator.Specs do
 
   @type opts() :: %{
           source_message: String.t(),
+          source_message_variables: list(String.t()),
           target_language_code: String.t()
         }
 end

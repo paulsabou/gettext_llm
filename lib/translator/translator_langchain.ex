@@ -36,6 +36,13 @@ defmodule GettextLLM.Translator.TranslatorLangchain do
       :ok
     end
 
+    prompt_skip_translation_of_variables =
+      if Enum.empty?(opts.source_message_variables) do
+        "The message is a string template with variables between %{} like %{variable_name}. The message has the following variables: #{Enum.join(opts.source_message_variables, ", ")}. Do not translate the variables, only the text outside the variables."
+      else
+        ""
+      end
+
     with :ok <- set_langchain.(),
          {:ok, _updated_chain, response} <-
            LLMChain.new!(%{
@@ -48,7 +55,10 @@ defmodule GettextLLM.Translator.TranslatorLangchain do
            |> LLMChain.add_messages([
              Message.new_system!("#{config.persona}. Your translation style is #{config.style}"),
              Message.new_user!(
-               "Translate the message between <|input_start|> and <|input_end|> into language with POSIX code '#{opts.target_language_code}'. Your answer mus contain only the message translation. The message to be translated is <|input_start|>#{opts.source_message}<|input_end|>"
+               "Translate the message between <|input_start|> and <|input_end|> into language with POSIX code '#{opts.target_language_code}'.
+                Your answer mus contain only the message translation.
+                #{prompt_skip_translation_of_variables}
+                The message to be translated is <|input_start|>#{opts.source_message}<|input_end|>"
              )
            ])
            |> LLMChain.run() do
