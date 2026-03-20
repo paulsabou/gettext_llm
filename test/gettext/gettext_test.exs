@@ -107,6 +107,12 @@ defmodule GettextLLM.GettextTest do
       variables = GettextLLM.Gettext.variables_from_string(string)
       assert variables == ["count", "min"]
     end
+
+    test "extracts variables from a string with no variables" do
+      string = "Invalid tax type"
+      variables = GettextLLM.Gettext.variables_from_string(string)
+      assert variables == []
+    end
   end
 
   describe "validate/2" do

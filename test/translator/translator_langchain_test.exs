@@ -13,6 +13,7 @@ defmodule GettextLLM.Translator.TranslatorLangchainTest do
           %{
             source_message:
               "Describe the persona of translator to improve the accuracy of the translation",
+            source_message_variables: [],
             target_language_code: "fr"
           }
         )
